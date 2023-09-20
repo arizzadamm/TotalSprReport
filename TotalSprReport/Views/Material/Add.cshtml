@@ -1,0 +1,63 @@
+﻿@model TotalSprReport.Models.ViewModel.AddMaterialViewModel
+
+@{
+}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="text-center">Add Material</h1>
+            <form method="post" action="Add" id="addMaterialForm">
+                <div class="mb-3">
+                    <label for="Nama Material" class="form-label">Nama Material</label>
+                    <input type="text" class="form-control" asp-for="Material">
+                </div>
+                <div class="mb-3">
+                    <label for="Tipe Material" class="form-label">Tipe Material</label>
+                    <select class="form-select" asp-for="TipeMaterial">
+                        <option value="false">Pokok</option>
+                        <option value="true">Non Pokok</option>
+                    </select>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#addMaterialForm').submit(function (e) {
+                e.preventDefault();
+                 var material = $('#Material').val();
+                 var tipeMaterial = $('#TipeMaterial').val();
+                console.log("Material: " + material);
+                console.log("Tipe: " + tipeMaterial);
+                
+
+                // Mendapatkan data dari formulir
+                var materialData = {
+                    Material: material,
+                    TipeMaterial: tipeMaterial
+                };
+                console.log("Material: " + materialData);
+
+                $.ajax({
+                    url: '/Material/Add',
+                    type: 'POST',
+                    data: materialData,
+                    success: function (response) {
+                        $('#formResult').html('<div class="alert alert-success">Proyek berhasil ditambahkan.</div>');
+                        window.location.href = '/Material'
+                    },
+                    error: function () {
+                        $('#formResult').html('<div class="alert alert-danger">Terjadi kesalahan saat menambahkan proyek.</div>');
+                    }
+                });
+            });
+        });
+    </script>
+}

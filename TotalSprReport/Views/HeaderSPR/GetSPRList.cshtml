@@ -1,0 +1,121 @@
+﻿@model TotalSprReport.Models.ViewModel.DetailProyekViewModel
+
+@{
+    ViewData["Title"] = "List SPR";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">List SPR Proyek</h1>
+    <form method="post" class="mt-3">
+        <div class="text-end mb-3">
+            <button class="btn btn-primary" id="addSPRButton">Add SPR</button>
+        </div>
+        <table id="sprtable" class="table table-light table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>SPR Code</th>
+                    <th>Nama Proyek</th>
+                    <th>Peminta</th>
+                    <th>Tanggal Minta</th>
+                    <th>Lokasi Proyek</th>
+                    <th>Detail</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var spr in Model.SPRList)
+                {
+                    <tr>
+                        <td>@spr.SPRCode</td>
+                        <td>@Model.ProyekList.FirstOrDefault(p => p.Id == spr.ProyekId)?.NamaProyek</td>
+                        <td>@spr.Peminta</td>
+                        <td>@spr.TanggalMinta.ToShortDateString()</td>
+                        <td>@Model.ProyekList.FirstOrDefault(p => p.Id == spr.ProyekId)?.LokasiProyek</td>
+                        <td>
+                            <button class="btn btn-primary ViewButton" data-sprId="@spr.Id" data-proyekId="@spr.ProyekId">View</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning EditButton" data-sprId="@spr.Id" data-proyekId="@spr.ProyekId">Edit</button>
+                            <button class="btn btn-danger deleteButton" data-sprId="@spr.Id">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>
+
+
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                var url = window.location.pathname;
+                console.log("url1" + url);
+                var proyekId = url.substring(url.lastIndexOf('/') + 1);
+                console.log("id" + proyekId);
+                $('#sprtable').DataTable();
+                $('#sprtable').on('click', '.deleteButton', function () {
+                var sprid = $(this).data('sprid'); // Mengambil nilai dari atribut data-proyekId
+
+                console.log("Proyek ID Delete: " + sprid);
+
+                if (confirm('Apakah Anda yakin ingin menghapus proyek ini?')) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/HeaderSPR/DeleteHeader/' + sprid,
+                        success: function (response) {
+                            window.location.href = '/Proyek'
+                        },
+                        error: function () {
+                            alert('Terjadi kesalahan saat menghapus proyek');
+                        }
+                    });
+                }
+            });
+                $('#sprtable').on('click', '.EditButton', function () {
+                var sprid = $(this).data('sprid'); // Mengambil nilai dari atribut data-proyekId
+
+                console.log("Proyek ID Delete: " + sprid);
+                    $.ajax({
+                        type: 'GET',
+                        success: function (response) {
+                        window.location.href = '/HeaderSPR/Edit/' + sprid;
+                        },
+                        error: function () {
+                            alert('Terjadi kesalahan');
+                        }
+                    });
+            });
+                $('#sprtable').on('click', '.ViewButton', function () {
+                var sprId = $(this).data('sprid');
+
+                console.log("Proyek ID: " + sprId);
+                $.ajax({
+                    type: 'GET',
+                    url: '/HeaderSPR/GetSPRDetil/' + sprId,
+                    success: function (response) {
+                        window.location.href = '/HeaderSPR/GetSPRDetil/' + sprId;
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan saat membuka halaman detail spr');
+                    }
+                });
+            });
+                $('#addSPRButton').click(function () {
+                console.log("Proyek ID: " + proyekId);
+                $.ajax({
+                    type: 'GET',
+                    success: function (response) {
+                        window.location.href = '/HeaderSPR/Add/' + proyekId;
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan saat membuka halaman edit proyek');
+                    }
+                });
+
+
+            });
+        
+        });
+        </script>
+}

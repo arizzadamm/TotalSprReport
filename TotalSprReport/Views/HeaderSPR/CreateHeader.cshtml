@@ -1,0 +1,54 @@
+﻿@model TotalSprReport.Models.ViewModel.AddHeaderViewModel
+
+@{
+    ViewData["Title"] = "Create SPR";
+}
+<h1>Add Header SPR</h1>
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label asp-for="Peminta" class="control-label">Peminta</label>
+        <input asp-for="Peminta" class="form-control" />
+        <span asp-validation-for="Peminta" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TanggalMinta" class="control-label">Tanggal Minta</label>
+        <input asp-for="TanggalMinta" class="form-control" />
+        <span asp-validation-for="TanggalMinta" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LokasiPeminta" class="control-label">Lokasi Peminta</label>
+        <input asp-for="LokasiPeminta" class="form-control" />
+        <span asp-validation-for="LokasiPeminta" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Tambah</button>
+</form>
+
+<a asp-action="Index">Kembali ke Daftar SPR</a>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Validasi form saat tombol "Tambah" ditekan
+            $('form').submit(function (e) {
+                e.preventDefault();
+
+                var proyekId = $('#ProyekId').val();
+                var peminta = $('#Peminta').val();
+                var tanggalMinta = $('#TanggalMinta').val();
+                var lokasiPeminta = $('#LokasiPeminta').val();
+
+             
+                if (!proyekId || !peminta || !tanggalMinta || !lokasiPeminta) {
+                    alert('Semua field harus diisi!');
+                    return;
+                }
+
+                
+                $('form').unbind('submit').submit();
+            });
+        });
+
+    </script>
+
+}

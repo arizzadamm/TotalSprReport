@@ -1,0 +1,78 @@
+﻿@model TotalSprReport.Models.ViewModel.EditMaterialViewModel
+
+@{
+    ViewData["Title"] = "Edit Material";
+}
+
+<h1>Edit Material</h1>
+
+<form asp-action="Edit" method="post" id="editForm" class="mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="Material" class="control-label">Nama Material</label>
+                    <input asp-for="Material" class="form-control" />
+                    <span asp-validation-for="Material" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TipeMaterial" class="control-label">Tipe Material</label>
+                    <select asp-for="TipeMaterial" class="form-control">
+                        <option value="false">Pokok</option>
+                        <option value="true">Non Pokok</option>
+                    </select>
+                </div>
+
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var url = window.location.pathname;
+            var matId = url.substring(url.lastIndexOf('/') + 1);
+
+            $('#editForm').submit(function (e) {
+                e.preventDefault();
+                var material = $('#Material').val();
+                var tipeMaterial = $('#TipeMaterial').val();
+                console.log("Proyek : " + matId);
+                console.log("Nama: " + material);
+                console.log("Tipe:  " + tipeMaterial);
+
+                var id = matId;
+       
+                var isNonPokok = (tipeMaterial === "1"); // Jika TipeMaterial bernilai "1", maka isNonPokok menjadi true, jika tidak, maka false
+
+                var dataToSend = {
+                    Id: id,
+                    Material: material,
+                    TipeMaterial: isNonPokok,
+                };
+                console.log("data:  " + dataToSend);
+                // Mengirim data ke controller melalui permintaan POST
+                $.ajax({
+                    url: '/Material/Update', 
+                    type: 'POST',
+                    data: JSON.stringify(dataToSend),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        window.location.href = '/Material';
+                    },
+                    error: function () {
+                        // Handle kesalahan (jika diperlukan)
+                        alert('Terjadi kesalahan saat mengupdate material');
+                    }
+                });
+            });
+        });
+    </script>
+}

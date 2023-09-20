@@ -1,0 +1,37 @@
+﻿@*@model List<TotalSprReport.Models.Header_SPR>
+@{
+    ViewData["Title"] = "SPR Report";
+}
+<h1>List Proyek</h1>
+<div class="text-end mb-3">
+    <button class="btn btn-primary mb-7" id="addProyekButton">Add Proyek</button>
+</div>
+
+<table id="myTable" class="table">
+    <thead>
+        <tr>
+            <th>Nama Proyek</th>
+            <th>Lokasi Proyek</th>
+            <th>SPR</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proyek in Model)
+        {
+                <tr>
+                    <td>@proyek.NamaProyek</td>
+                    <td>@proyek.LokasiProyek</td>
+                    <td>
+                        <button class="SPRButton" data-proyekId="@proyek.Id">View</button>
+                    </td>
+                    <td>
+                        <button class="editButton" data-proyekId="@proyek.Id">Edit</button>
+                        <button class="deleteButton" data-proyekId="@proyek.Id">Delete</button>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+*@

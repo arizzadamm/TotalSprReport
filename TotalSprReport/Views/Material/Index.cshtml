@@ -1,0 +1,75 @@
+﻿@model List<TotalSprReport.Models.Materials>
+
+@{
+    ViewData["Title"] = "List Material";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">List Material</h1>
+    <div class="text-end">
+        <button class="btn btn-primary" id="addMaterialButton">Add Material</button>
+    </div>
+    <table id="MaterialTable" class="table table-light table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Nama Material</th>
+                <th>Tipe Material</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var material in Model)
+            {
+                <tr>
+                    <td>@material.Material</td>
+                    <td>@(material.TipeMaterial ? "Non Pokok" : "Pokok")</td>
+                    <td>
+                        <button class="btn btn-primary editButton" data-materialId="@material.Id">Edit</button>
+                        <button class="btn btn-danger deleteButton" data-materialId="@material.Id">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#MaterialTable').DataTable();
+            $('#MaterialTable').on('click', '.editButton', function () {
+                var materialId = $(this).data('materialid');
+
+                console.log("Material ID: " + materialId);
+                $.ajax({
+                    type: 'GET',
+                    url: '/Material/Edit/' + materialId,
+                    success: function (response) {
+                        window.location.href = '/Material/Edit/' + materialId;
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan saat membuka halaman edit material');
+                    }
+                });
+            });
+            $('#MaterialTable').on('click', '.deleteButton', function () {
+                var materialId = $(this).data('materialid'); 
+                if (confirm('Apakah Anda yakin ingin menghapus material ini?')) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/Material/Delete/' + materialId,
+                        success: function (response) {
+                            window.location.href = '/Material'
+                        },
+                        error: function () {
+                            alert('Terjadi kesalahan saat menghapus material');
+                        }
+                    });
+                }
+            });
+            $('#addMaterialButton').click(function () {
+                window.location.href = '/Material/Add';
+            });
+        });
+    </script>
+}

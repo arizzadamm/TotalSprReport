@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "datatables.net-autofill-bs5": "^2.6.0",
+    "datatables.net-bs5": "^1.13.6",
+    "datatables.net-buttons-bs5": "^2.4.2",
+    "datatables.net-colreorder-bs5": "^1.7.0",
+    "datatables.net-datetime": "^1.5.0",
+    "datatables.net-dt": "^1.13.6",
+    "datatables.net-rowreorder-bs5": "^1.4.1",
+    "datatables.net-searchpanes-bs5": "^2.2.0",
+    "pdfmake": "^0.2.7"
+  }
+}

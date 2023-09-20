@@ -1,0 +1,85 @@
+﻿@model TotalSprReport.Models.ViewModel.EditDetilViewModel
+
+@{
+    ViewData["Title"] = "Edit Detil SPR";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">Edit Detail SPR</h1>
+    <form id="editsprdetil" method="post" class="mt-3">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="MaterialId" class="control-label">Material</label>
+                    <select asp-for="MaterialId" class="form-control">
+                        @foreach (var material in Model.MaterialList)
+                        {
+                            <option value="@material.Value">@material.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="MaterialId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="TanggalRencanaDiterima" class="control-label">Tanggal Rencana Diterima</label>
+                    <input asp-for="TanggalRencanaDiterima" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    <span asp-validation-for="TanggalRencanaDiterima" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var url = window.location.pathname;
+            var IdRef = url.substring(url.lastIndexOf('/') + 1);
+            $('#IdRef').val(IdRef);
+            // Validasi form saat tombol "Tambah" ditekan
+            $('#editsprdetil').submit(function (e) {
+                e.preventDefault();
+                var materialId = $('#MaterialId').val();
+                var tanggalrencanaditerima = $('#TanggalRencanaDiterima').val();
+
+                
+                if (!materialId) {
+                    alert('Pilih Material terlebih dahulu!');
+                    return;
+                }
+                var dataToSend = {
+                    Id: IdRef,
+                    MaterialId: materialId,
+                    TanggalRencanaDiterima: tanggalrencanaditerima
+
+                };
+
+             
+                $.ajax({
+                    url: '/HeaderSPR/UpdateDetil', 
+                    type: 'POST',
+                    data: JSON.stringify(dataToSend),
+                    contentType: 'application/json',
+                    success: function (response) {
+                       
+                        window.location.href = '/Proyek';
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan saat mengirim data form.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+
+

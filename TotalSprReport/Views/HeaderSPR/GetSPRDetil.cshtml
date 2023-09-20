@@ -1,0 +1,102 @@
+﻿@model TotalSprReport.Models.ViewModel.DetailSprViewModel
+@{
+    ViewData["Title"] = "SPR Detail";
+}
+
+<h1>SPR Detail</h1>
+
+<form method="post">
+<div class="text-end mb-3">
+    <button class="btn btn-primary mb-7" id="addDetail">Add Detail</button>
+</div>
+    <table class="table table-light table-striped" id="sprdetil">
+    <thead>
+        <tr>
+            <th>Material</th>
+            <th>Tipe Material</th>
+            <th>Tanggal Rencana Diterima</th>
+            <th>Status Disetujui</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sprDetail in Model.SPRDetil)
+        {
+            <tr>
+                <td>@Model.Materials.FirstOrDefault(p => p.Id == sprDetail.MaterialId)?.Material</td>
+                <td>
+                    @{
+                        var material = Model.Materials.FirstOrDefault(p => p.Id == sprDetail.MaterialId);
+                        var tipeMaterial = material?.TipeMaterial ?? false;
+                        var tipeMaterialText = tipeMaterial ? "Non Pokok" : "Pokok";
+                    }
+                    @tipeMaterialText
+                </td>
+             
+                <td>@sprDetail.TanggalRencanaDiterima.ToShortDateString()</td>
+                <td>@(sprDetail.StatusDisetujui ? "Disetujui" : "Tidak Disetujui")</td>
+                <th>
+                        <button class="btn btn-warning EditButton" data-sprId="@sprDetail.Id" data-sprId="@sprDetail.Id">Edit</button>
+                    <button class="btn btn-danger deleteButton" data-sprId="@sprDetail.Id">Delete</button>
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var url = window.location.pathname;
+            console.log("url1" + url);
+            var sprId = url.substring(url.lastIndexOf('/') + 1);
+            console.log("spr ID: " + sprId);
+            $('#sprdetil').DataTable();
+            $('#addDetail').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    success: function (response) {
+                        window.location.href = '/HeaderSPR/AddDetilSPR/' + sprId;
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan saat membuka halaman edit proyek');
+                    }
+                });
+
+        });
+            $('#sprdetil').on('click', '.deleteButton', function () {
+                 var detilId = $(this).data('sprid');
+                console.log("detil ID: " + detilId);
+
+                if (confirm('Apakah Anda yakin ingin menghapus proyek ini?')) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/HeaderSPR/DeleteDetil/' + detilId,
+                        success: function (response) {
+                            $('#formResult').html('<div class="alert alert-success">Detil SPR telah dihapus.</div>');
+                            window.location.href = '/Proyek';
+                        },
+                        error: function () {
+                            alert('Terjadi kesalahan saat menghapus proyek');
+                        }
+                    });
+                }
+            });
+            $('#sprdetil').on('click', '.EditButton', function () {
+                var detilId = $(this).data('sprid');
+                console.log("detil ID: " + detilId);
+                $.ajax({
+                    type: 'GET',
+                    success: function (response) {
+                        window.location.href = '/HeaderSPR/EditDetilSPR/' + detilId;
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan');
+                    }
+                });
+            });
+
+    });
+</script>
+}

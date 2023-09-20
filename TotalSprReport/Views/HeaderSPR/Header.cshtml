@@ -1,0 +1,43 @@
+﻿@model TotalSprReport.Models.ViewModel.DetailProyekViewModel
+
+@{
+    ViewData["Title"] = "List SPR";
+}
+
+<h1>List SPR</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>SPR Code</th>
+            <th>Nama Proyek</th>
+            <th>Peminta</th>
+            <th>Tanggal Minta</th>
+            <th>Lokasi Proyek</th>
+            <th>Lokasi Peminta</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var spr in Model.SPRList)
+        {
+            <tr>
+                <td>@spr.Id</td>
+                <td>@spr.SPRCode</td>
+                <td>@Model.ProyekList.FirstOrDefault(p => p.Id == spr.ProyekId)?.NamaProyek</td>
+                <td>@spr.Peminta</td>
+                <td>@spr.TanggalMinta.ToShortDateString()</td>
+                <td>@Model.ProyekList.FirstOrDefault(p => p.Id == spr.ProyekId)?.LokasiProyek</td>
+                <td>@spr.LokasiPeminta</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}

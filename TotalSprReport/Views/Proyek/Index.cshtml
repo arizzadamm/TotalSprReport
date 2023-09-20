@@ -1,0 +1,125 @@
+﻿@model List<TotalSprReport.Models.Proyek>
+@{
+    ViewData["Title"] = "List Proyek";
+}
+<h1>List Proyek</h1>
+<div class="text-end mb-3">
+    <button class="btn btn-primary mb-7" id="addProyekButton">Add Proyek</button>
+</div>
+
+<div class="container mt-5">
+    <table id="myTable" class="table table-light table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Nama Proyek</th>
+                <th class="lokasi-column">Lokasi Proyek</th>
+                <th>SPR</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var proyek in Model)
+            {
+                <tr>
+                    <td>@proyek.NamaProyek</td>
+                    <td>@proyek.LokasiProyek</td>
+                    <td>
+                        <button class="btn btn-primary SPRButton" data-proyekId="@proyek.Id">View</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary editButton" data-proyekId="@proyek.Id">Edit</button>
+                        <button class="btn btn-danger deleteButton" data-proyekId="@proyek.Id">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.10/css/dataTables.bootstrap4.min.css">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+
+                "ajax": {
+                    "url": "/Proyek/GetData",
+                    "dataSrc": "data"
+                },
+                "columns": [
+                    { "data": "namaProyek" },
+                    { "data": "lokasiProyek" },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            var proyekId = data.id;
+                            return '<button class="btn btn-primary SPRButton" data-proyekId="' + proyekId + '">SPR</button>' ;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            var proyekId = data.id;
+                            return '<button class="btn btn-warning editButton" data-proyekId="' + proyekId + '">Edit</button>' +  
+                                '<button class="btn btn-danger deleteButton" data-proyekId="' + proyekId + '">Delete</button>';
+                        }
+                    }
+                            
+                ]
+                
+             
+            });
+            $('#myTable').on('click', '.editButton', function () {
+                var proyekId = $(this).data('proyekid');
+
+                console.log("Proyek ID: " + proyekId);
+                $.ajax({
+                    type: 'GET',
+                    url: '/Proyek/Edit/' + proyekId,
+                    success: function (response) {
+                        window.location.href = '/Proyek/Edit/' + proyekId;
+                    },
+                    error: function () {
+                        alert('Terjadi kesalahan saat membuka halaman edit proyek');
+                    }
+                });
+            });
+            $('#myTable').on('click', '.deleteButton', function () {
+                var proyekId = $(this).data('proyekid');
+
+                console.log("Proyek ID Delete: " + proyekId);
+
+                if (confirm('Apakah Anda yakin ingin menghapus proyek ini?')) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/Proyek/Delete/' + proyekId,
+                        success: function (response) {
+                            window.location.href = '/Proyek'
+                        },
+                        error: function () {
+                            alert('Terjadi kesalahan saat menghapus proyek');
+                        }
+                    });
+                }
+            });
+            $('#addProyekButton').click(function () {
+                window.location.href = '/Proyek/Add'; 
+            });
+            $('#myTable').on('click', '.SPRButton', function () {
+                var proyekId = $(this).data('proyekid'); 
+
+                console.log("Proyek ID Delete: " + proyekId);
+                    $.ajax({
+                        type: 'GET',
+                        url: '/HeaderSPR/GetSPRList/' + proyekId,
+                        success: function (response) {
+                        window.location.href = '/HeaderSPR/GetSPRList/' + proyekId
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    });
+            });
+        });
+    </script>
+}
